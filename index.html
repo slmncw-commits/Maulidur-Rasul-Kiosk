@@ -209,6 +209,7 @@
     font-family:'Plus Jakarta Sans', sans-serif;
     font-size:clamp(14px,1.3vw,17px);
     color:var(--teal); min-height:20px; font-weight:500;
+    max-width:640px;
   }
 
   .toggle-link{
@@ -273,7 +274,7 @@
     <div class="idle-block" id="idleBlock">
       <h1>Maulidur Rasul</h1>
       <p class="arabic-sub">وُلِدَ الْهُدَى فَالْكَائِنَاتُ ضِيَاءُ</p>
-      <p class="hint">Tekan butang mikrofon di bawah dan tanya soalan anda tentang sirah, sejarah dan amalan sambutan Maulidur Rasul ﷺ.</p>
+      <p class="hint">Tekan butang mikrofon di bawah dan tanya soalan anda tentang Maulidur Rasul, biodata dan sirah Nabi Muhammad ﷺ.</p>
     </div>
 
     <!-- LOADING -->
@@ -326,153 +327,282 @@
     <div class="chips" id="chips"></div>
   </div>
 
-  <div class="disclaimer">Sistem ini menjawab berdasarkan rujukan sirah tetap mengenai Maulidur Rasul. Soalan di luar rujukan ini tidak dapat dijawab.</div>
+  <div class="disclaimer">Sistem ini menjawab berdasarkan rujukan sirah tetap mengenai Maulidur Rasul dan biodata Nabi Muhammad ﷺ. Soalan di luar rujukan ini tidak dapat dijawab.</div>
 
 <script>
-/* ================= Fixed Q&A knowledge base ================= */
+/* ================================================================
+   FIXED Q&A KNOWLEDGE BASE
+   Each entry: q = array of question phrasings (used for matching),
+               a = HTML answer shown on the big kiosk stage
+   ================================================================ */
 const FIXED_QA = [
-  { keywords: ["apa itu maulidur rasul","apakah maulidur rasul","definisi maulidur rasul","maksud maulidur rasul","apa maksud maulid","apa maulid"],
-    answer: `<p><b>Maulidur Rasul</b> ialah sambutan bagi memperingati kelahiran Nabi Muhammad ﷺ yang jatuh pada <b>12 Rabiul Awal</b>. Di Malaysia, ia disambut sebagai cuti umum dan menjadi platform untuk menghayati semula sirah dan akhlak Rasulullah ﷺ.</p>` },
-  { keywords: ["bila tarikh","tarikh sebenar","bila maulidur rasul","bila sambutan","tarikh maulid tahun ini","bila cuti maulidur rasul"],
-    answer: `<p>Nabi Muhammad ﷺ dilahirkan pada <b>12 Rabiul Awal</b> pada Tahun Gajah (sekitar <b>tahun 570 Masihi</b>). Kerana kalendar Hijrah berasaskan peredaran bulan, tarikh Masihi bagi Maulidur Rasul berubah setiap tahun. Untuk tarikh cuti umum tahun semasa, rujuk kalendar rasmi negeri/kerajaan.</p>` },
-  { keywords: ["dimana dilahirkan","tempat lahir","lahir di mana","negara mana nabi lahir"],
-    answer: `<p>Nabi Muhammad ﷺ dilahirkan di <b>Makkah al-Mukarramah</b>, di kawasan yang dikenali sebagai Suq al-Layl.</p>` },
-  { keywords: ["ibu bapa","siapa bapa","siapa ibu","abdullah","aminah","nama bapa nabi","nama ibu nabi"],
-    answer: `<p>Bapa Baginda ialah <b>Abdullah bin Abdul Muttalib</b>, yang wafat sebelum Baginda dilahirkan. Ibu Baginda ialah <b>Aminah binti Wahab</b>, yang wafat ketika Baginda berusia 6 tahun.</p>` },
-  { keywords: ["bila sambutan bermula","sejarah sambutan","asal usul sambutan","siapa mula sambutan","siapa pertama sambut maulid"],
-    answer: `<p>Sejarah sambutan Maulid dikaitkan oleh sebahagian ulama dengan zaman <b>Dinasti Fatimiyyah</b> di Mesir (abad ke-11–12M), dan turut dikaitkan dengan <b>Sultan Muzaffaruddin Kokburi</b>, pemerintah Irbil pada abad ke-12/13M.</p>` },
-  { keywords: ["khilaf","hukum sambutan","adakah harus","bidaah","pendapat ulama","adakah wajib sambut","hukum maulid"],
-    answer: `<p>Terdapat <b>khilaf</b> di kalangan ulama. Sebahagian menganggapnya <i>bidaah hasanah</i> kerana matlamatnya menghidupkan kecintaan kepada Nabi ﷺ, manakala sebahagian lain berpandangan ia tidak digalakkan kerana tidak diamalkan oleh Rasulullah ﷺ dan para sahabat. Ia bukan ibadah wajib.</p>` },
-  { keywords: ["bagaimana malaysia sambut","sambutan di malaysia","perayaan malaysia","cuti umum","aktiviti sambutan malaysia"],
-    answer: `<p>Di Malaysia, Maulidur Rasul disambut sebagai <b>cuti umum</b> dengan pelbagai aktiviti seperti:</p><ul><li>Perarakan dan himpunan awam</li><li>Majlis membaca selawat dan marhaban</li><li>Ceramah dan tazkirah sirah Nabi</li><li>Pertandingan nasyid</li><li>Program kebajikan dan sedekah</li></ul>` },
-  { keywords: ["hikmah","tujuan sambutan","kenapa sambut","kepentingan","apa faedah sambutan"],
-    answer: `<p>Hikmah sambutan Maulidur Rasul adalah untuk <b>mengingati dan menghayati sirah serta akhlak mulia Rasulullah ﷺ</b>, menjadikannya bukan sekadar perayaan, tetapi juga masa muhasabah diri.</p>` },
-  { keywords: ["amalan digalakkan","apa patut buat","apa yang dilakukan","amalan sunat","aktiviti digalakkan sambut maulid"],
-    answer: `<p>Antara amalan yang digalakkan:</p><ul><li>Memperbanyakkan selawat ke atas Nabi ﷺ</li><li>Membaca dan mempelajari sirah Nabi</li><li>Menghadiri majlis ilmu dan tazkirah</li><li>Bersedekah dan membantu golongan memerlukan</li></ul>` },
-  { keywords: ["apa itu selawat","maksud selawat","definisi selawat","kenapa berselawat"],
-    answer: `<p><b>Selawat</b> ialah doa dan pujian yang dipanjatkan kepada Nabi Muhammad ﷺ sebagai tanda kecintaan dan penghormatan, seperti lafaz "Allahumma solli 'ala Muhammad".</p>` },
-  { keywords: ["gelaran nabi","nama gelaran","al-amin","gelaran muhammad","kenapa digelar al amin"],
-    answer: `<p>Antara gelaran Nabi Muhammad ﷺ ialah <b>Al-Amin</b> (yang dipercayai), diberikan oleh masyarakat Makkah sejak sebelum kenabian kerana kejujuran Baginda yang tinggi.</p>` },
-  { keywords: ["tahun gajah","peristiwa kelahiran","abrahah","gajah","surah al fil"],
-    answer: `<p>Nabi Muhammad ﷺ dilahirkan pada <b>Tahun Gajah</b>, sempena kegagalan tentera <b>Abrahah</b> memusnahkan Kaabah menggunakan pasukan bergajah, sepertimana disebut dalam Surah Al-Fil.</p>` },
-  { keywords: ["sirah ringkas","garis masa","umur nabi","bila wafat","bila wahyu","umur nabi wafat","bila nabi meninggal"],
-    answer: `<p>Ringkasan garis masa penting:</p><ul><li><b>570M</b> — Kelahiran di Makkah</li><li><b>610M</b> — Wahyu pertama (usia 40 tahun)</li><li><b>622M</b> — Peristiwa Hijrah ke Madinah</li><li><b>632M</b> — Kewafatan Baginda (usia 63 tahun)</li></ul>` },
-  { keywords: ["kenapa tarikh berubah","tarikh tak sama","kalendar hijrah","kalendar islam","kenapa tarikh maulid lain setiap tahun"],
-    answer: `<p>Tarikh Maulidur Rasul mengikut kalendar Masihi berubah setiap tahun kerana <b>kalendar Hijrah adalah kalendar lunar</b> (354–355 hari setahun), lebih pendek berbanding kalendar Masihi (365 hari).</p>` },
-  { keywords: ["nama penuh nabi","nama lengkap muhammad","siapa nama penuh rasulullah"],
-    answer: `<p>Nama penuh Baginda ialah <b>Muhammad bin Abdullah bin Abdul Muttalib</b>, dari keturunan Bani Hasyim, suku Quraisy di Makkah.</p>` },
-  { keywords: ["maksud nama muhammad","erti nama muhammad"],
-    answer: `<p>Nama <b>Muhammad</b> membawa maksud "yang terpuji" atau "yang sentiasa dipuji", sesuai dengan akhlak dan peribadi mulia Baginda.</p>` },
-  { keywords: ["wahyu pertama","gua hira","iqra","bila terima wahyu"],
-    answer: `<p>Wahyu pertama diturunkan kepada Nabi Muhammad ﷺ di <b>Gua Hira'</b> ketika Baginda berusia 40 tahun, iaitu ayat pertama Surah Al-'Alaq yang bermula dengan perkataan <b>"Iqra'"</b> (Bacalah).</p>` },
-  { keywords: ["hijrah ke mana","peristiwa hijrah","kenapa hijrah","hijrah madinah"],
-    answer: `<p><b>Hijrah</b> ialah peristiwa Nabi Muhammad ﷺ dan para sahabat berpindah dari Makkah ke <b>Madinah</b> pada tahun 622 Masihi, bagi mengelak penindasan dan membina masyarakat Islam yang baharu. Peristiwa ini menjadi asas permulaan kalendar Hijrah.</p>` },
-  { keywords: ["isteri nabi","siapa isteri rasulullah","khadijah","aisyah"],
-    answer: `<p>Isteri pertama Baginda ialah <b>Khadijah binti Khuwailid</b>, yang sangat menyokong dakwah Baginda. Selepas kewafatan Khadijah, Baginda berkahwin dengan beberapa isteri lain, termasuk <b>Aisyah binti Abu Bakar</b>.</p>` },
-  { keywords: ["anak nabi","zuriat rasulullah","bilangan anak nabi","fatimah anak nabi"],
-    answer: `<p>Nabi Muhammad ﷺ dikurniakan beberapa orang anak bersama Khadijah, antaranya <b>Fatimah az-Zahra'</b>, yang paling dikenali dan meneruskan zuriat Baginda.</p>` },
-  { keywords: ["mukjizat nabi","mukjizat utama","apa mukjizat rasulullah"],
-    answer: `<p>Mukjizat utama dan paling agung Nabi Muhammad ﷺ ialah <b>Al-Quran</b> — kitab suci yang kekal terpelihara sehingga kini sebagai bukti kenabian Baginda.</p>` },
-  { keywords: ["di mana nabi dimakamkan","kubur nabi","makam nabi","masjid nabawi"],
-    answer: `<p>Nabi Muhammad ﷺ wafat dan dimakamkan di <b>Madinah al-Munawwarah</b>, di dalam kawasan yang kini menjadi sebahagian daripada <b>Masjid Nabawi</b>.</p>` },
-  { keywords: ["sahabat nabi","siapa sahabat rasulullah","khulafa rasyidin","abu bakar umar uthman ali"],
-    answer: `<p>Antara sahabat terdekat dan pengganti kepimpinan (Khulafa Rasyidin) selepas Baginda ialah <b>Abu Bakar as-Siddiq, Umar al-Khattab, Uthman bin Affan,</b> dan <b>Ali bin Abi Talib</b>.</p>` },
-  { keywords: ["akhlak nabi","sifat nabi","peribadi rasulullah","contoh teladan nabi"],
-    answer: `<p>Nabi Muhammad ﷺ dikenali dengan akhlak mulia seperti <b>jujur, amanah, penyabar, pemaaf, dan penyayang</b> — malah dikasihi bukan sahaja oleh umat Islam, tetapi turut dihormati oleh musuh Baginda kerana peribadi yang luhur.</p>` },
-  { keywords: ["nabi terakhir","khataman nabiyyin","adakah ada nabi selepas muhammad"],
-    answer: `<p>Nabi Muhammad ﷺ adalah <b>Nabi dan Rasul yang terakhir</b> (Khataman Nabiyyin) — tiada lagi nabi yang akan diutuskan selepas Baginda.</p>` },
-  { keywords: ["negara lain sambut maulid","sambutan luar negara","mesir sambut maulid","turki sambut maulid","indonesia sambut maulid"],
-    answer: `<p>Sambutan Maulid turut diraikan di banyak negara umat Islam dengan cara berbeza-beza — contohnya perarakan besar-besaran di sesetengah negara Timur Tengah, serta majlis zikir dan selawat di rantau Nusantara seperti Indonesia dan Brunei.</p>` },
-  { keywords: ["siapa jaga nabi","datuk nabi","abdul muttalib jaga","penjaga nabi selepas ibu meninggal","abu talib jaga nabi"],
-    answer: `<p>Selepas ibunya wafat, Nabi Muhammad ﷺ dijaga oleh datuknya, <b>Abdul Muttalib</b>. Selepas datuknya turut wafat ketika Baginda berusia 8 tahun, Baginda dijaga pula oleh bapa saudaranya, <b>Abu Talib</b>.</p>` },
-  { keywords: ["ibu susuan","halimah","siapa susukan nabi","ibu susu nabi"],
-    answer: `<p>Ibu susuan Nabi Muhammad ﷺ ialah <b>Halimah binti Abi Zu'aib</b>, lebih dikenali sebagai <b>Halimah As-Sa'diyyah</b>, daripada suku Bani Sa'ad. Baginda dihantar untuk disusukan dan dibesarkan di kampung suku tersebut sejak bayi, mengikut adat masyarakat Makkah ketika itu.</p>` },
-  { keywords: ["suku nabi","keturunan nabi","kaum nabi","quraisy","bani hasyim"],
-    answer: `<p>Nabi Muhammad ﷺ berasal daripada suku <b>Quraisy</b>, salah satu suku paling berpengaruh di Makkah, dan lebih khusus daripada keturunan <b>Bani Hasyim</b>.</p>` },
-  { keywords: ["pekerjaan nabi","kerja nabi sebelum jadi rasul","nabi peniaga","nabi berniaga"],
-    answer: `<p>Sebelum menerima kenabian, Nabi Muhammad ﷺ bekerja sebagai <b>peniaga/pedagang</b>, turut membawa barang dagangan ke Syam. Baginda terkenal dengan sifat jujur dan amanah dalam urus niaga, sehingga digelar Al-Amin.</p>` },
-  { keywords: ["umur berkahwin khadijah","bila nabi kahwin","usia nabi kahwin"],
-    answer: `<p>Nabi Muhammad ﷺ berkahwin dengan Khadijah binti Khuwailid ketika Baginda berusia <b>25 tahun</b>.</p>` },
-  { keywords: ["berapa lama berdakwah","tempoh dakwah","berapa tahun dakwah makkah madinah"],
-    answer: `<p>Nabi Muhammad ﷺ berdakwah selama <b>13 tahun di Makkah</b> dan <b>10 tahun di Madinah</b>, menjadikan tempoh keseluruhan risalah kenabian Baginda selama 23 tahun (610–632 Masihi).</p>` },
-  { keywords: ["nabi yatim","yatim piatu","nabi anak yatim"],
-    answer: `<p>Nabi Muhammad ﷺ menjadi <b>yatim</b> sejak sebelum dilahirkan (bapanya, Abdullah, wafat semasa Baginda masih dalam kandungan), dan menjadi <b>yatim piatu</b> sepenuhnya ketika ibunya, Aminah, wafat pada usia Baginda 6 tahun.</p>` }
+
+/* ---------------- 1. Asas Maulidur Rasul ---------------- */
+{ q:["apa itu maulidur rasul","apakah maulidur rasul","definisi maulidur rasul","maksud maulidur rasul","apa maksud maulid","apa maulid"],
+  a:`<p><b>Maulidur Rasul</b> ialah peringatan kelahiran Nabi Muhammad ﷺ, disambut sebagai cuti umum di Malaysia untuk menghayati semula sirah dan akhlak Baginda.</p>` },
+{ q:["bila maulidur rasul disambut","bila tarikh maulidur rasul","bila sambutan maulidur rasul"],
+  a:`<p>Di Malaysia, Maulidur Rasul disambut pada <b>12 Rabiulawal</b> setiap tahun mengikut kalendar Islam (Hijrah).</p>` },
+{ q:["siapakah yang dimaksudkan dengan rasul","apa itu rasul","siapa rasul"],
+  a:`<p><b>Rasul</b> ialah manusia pilihan Allah yang menerima wahyu dan diperintahkan menyampaikannya kepada umat manusia.</p>` },
+{ q:["siapakah rasul terakhir","siapa rasul terakhir","nabi terakhir","adakah ada nabi selepas muhammad"],
+  a:`<p><b>Nabi Muhammad ﷺ</b> ialah Rasul dan Nabi yang terakhir. Tiada lagi nabi yang akan diutuskan selepas Baginda.</p>` },
+{ q:["apakah maksud khatam al anbiya","khatam al anbiya","apa maksud penutup nabi"],
+  a:`<p><b>Khatam al-Anbiya'</b> bermaksud "penutup para nabi" — merujuk kepada Nabi Muhammad ﷺ sebagai nabi dan rasul terakhir daripada seluruh nabi yang diutuskan Allah.</p>` },
+{ q:["mengapa kita menyambut maulidur rasul","kenapa sambut maulidur rasul","apakah hikmah sambutan maulidur rasul","apakah tujuan sambutan maulidur rasul"],
+  a:`<p>Sambutan Maulidur Rasul adalah tanda <b>mengingati kelahiran Nabi Muhammad ﷺ</b> serta menzahirkan kecintaan kepada Baginda — bukan sekadar perayaan, tetapi juga masa muhasabah dan menghayati sirah serta akhlak mulia Baginda.</p>` },
+{ q:["apakah pengajaran maulidur rasul","apa pengajaran boleh ambil daripada maulidur rasul"],
+  a:`<p>Melalui sambutan Maulidur Rasul, kita dapat <b>mengenali sirah, mencontohi akhlak, dan mengamalkan ajaran Nabi ﷺ</b> dalam kehidupan seharian.</p>` },
+{ q:["apakah tema utama maulidur rasul","tema maulidur rasul tahun ini"],
+  a:`<p>Tema Maulidur Rasul bergantung kepada tema rasmi yang ditetapkan oleh pihak berkuasa agama pada tahun berkenaan, dan boleh berbeza setiap tahun.</p>` },
+{ q:["apa yang patut kita lakukan sempena maulidur rasul","amalan digalakkan sempena maulidur rasul","apa patut buat sambutan maulid"],
+  a:`<p>Antara amalan yang digalakkan sempena Maulidur Rasul:</p><ul><li>Mempelajari dan menghayati sirah Nabi ﷺ</li><li>Memperbanyakkan selawat</li><li>Menghadiri majlis ilmu dan tazkirah</li><li>Bersedekah dan berbuat baik kepada sesama</li></ul>` },
+{ q:["hukum sambutan maulid","adakah maulid bidaah","khilaf ulama pasal maulid","adakah wajib sambut maulid"],
+  a:`<p>Terdapat <b>khilaf (perbezaan pendapat)</b> di kalangan ulama mengenai sambutan Maulid. Sebahagian menganggapnya <i>bidaah hasanah</i> kerana menghidupkan kecintaan kepada Nabi ﷺ, manakala sebahagian lain berpandangan ia tidak digalakkan kerana tidak diamalkan oleh Rasulullah ﷺ dan para sahabat. Ia bukan ibadah wajib.</p>` },
+{ q:["bagaimana malaysia sambut maulidur rasul","sambutan maulid di malaysia","aktiviti sambutan maulid malaysia"],
+  a:`<p>Di Malaysia, Maulidur Rasul disambut sebagai cuti umum dengan aktiviti seperti:</p><ul><li>Perarakan dan himpunan awam</li><li>Majlis membaca selawat dan marhaban</li><li>Ceramah dan tazkirah sirah Nabi</li><li>Pertandingan nasyid</li><li>Program kebajikan dan sedekah</li></ul>` },
+{ q:["apa itu selawat","maksud selawat","kenapa berselawat"],
+  a:`<p><b>Selawat</b> ialah doa dan pujian yang dipanjatkan kepada Nabi Muhammad ﷺ sebagai tanda kecintaan dan penghormatan, seperti lafaz "Allahumma solli 'ala Muhammad".</p>` },
+{ q:["negara lain sambut maulid","sambutan maulid luar negara","mesir sambut maulid","turki sambut maulid","indonesia sambut maulid"],
+  a:`<p>Sambutan Maulid turut diraikan di banyak negara umat Islam dengan cara berbeza-beza — contohnya perarakan besar-besaran di sesetengah negara Timur Tengah, serta majlis zikir dan selawat di rantau Nusantara seperti Indonesia dan Brunei.</p>` },
+
+/* ---------------- 2. Biodata Nabi Muhammad ﷺ ---------------- */
+{ q:["siapakah nabi muhammad","siapa nabi muhammad"],
+  a:`<p>Nabi Muhammad ﷺ ialah <b>Nabi dan Rasul terakhir</b> yang diutuskan Allah kepada seluruh umat manusia, membawa risalah Islam melalui Al-Quran.</p>` },
+{ q:["di manakah nabi muhammad dilahirkan","tempat lahir nabi","nabi lahir kat mana","negara mana nabi lahir"],
+  a:`<p>Nabi Muhammad ﷺ dilahirkan di <b>Makkah al-Mukarramah</b>.</p>` },
+{ q:["bilakah nabi muhammad dilahirkan","nabi lahir tahun bila","bila nabi lahir","tarikh sebenar kelahiran nabi"],
+  a:`<p>Baginda dilahirkan pada <b>Tahun Gajah</b>, dianggarkan sekitar tahun <b>570/571 Masihi</b>. Tarikh 12 Rabiulawal amat masyhur dalam tradisi umat Islam, namun tarikh tepat kelahiran Baginda turut diperselisihkan oleh sebahagian ahli sejarah dan ulama sirah.</p>` },
+{ q:["apakah nama penuh nabi muhammad","nama penuh nabi","nama lengkap muhammad"],
+  a:`<p>Nama penuh Baginda ialah <b>Muhammad bin Abdullah bin Abdul Muttalib bin Hashim</b>.</p>` },
+{ q:["siapakah ayah nabi muhammad","siapa ayah nabi","nama bapa nabi","siapa mak nabi","siapakah ibu nabi muhammad","siapa ibu nabi","nama ibu nabi"],
+  a:`<p>Bapa Baginda ialah <b>Abdullah bin Abdul Muttalib</b>, yang wafat sebelum Baginda dilahirkan. Ibu Baginda ialah <b>Aminah binti Wahab</b>, yang wafat ketika Baginda berusia kira-kira 6 tahun.</p>` },
+{ q:["siapakah datuk nabi muhammad","siapa datuk nabi"],
+  a:`<p>Datuk Nabi Muhammad ﷺ ialah <b>Abdul Muttalib</b>, yang menjaga Baginda selepas kewafatan ibunya.</p>` },
+{ q:["siapakah bapa saudara nabi yang menjaganya","siapa jaga nabi masa kecil","siapa jaga nabi selepas datuk wafat"],
+  a:`<p>Selepas Abdul Muttalib wafat ketika Baginda berusia 8 tahun, Baginda dijaga oleh bapa saudaranya, <b>Abu Talib</b>.</p>` },
+{ q:["dari kabilah manakah nabi muhammad","suku nabi","keturunan nabi","kaum nabi","quraisy","bani hasyim","nabi orang arab ke"],
+  a:`<p>Nabi Muhammad ﷺ berasal daripada bangsa <b>Arab</b>, suku <b>Quraisy</b>, dan lebih khusus daripada keturunan <b>Bani Hashim</b>.</p>` },
+{ q:["apakah gelaran nabi sebelum menjadi rasul","kenapa nabi digelar al amin","gelaran nabi al-amin"],
+  a:`<p>Sebelum menjadi Rasul, Baginda dikenali sebagai <b>Al-Amin</b>, bermaksud "orang yang dipercayai", kerana kejujuran dan sifat amanah Baginda yang diakui oleh masyarakat Quraisy.</p>` },
+{ q:["apakah sifat wajib rasul","sifat wajib bagi rasul"],
+  a:`<p>Sifat wajib bagi Rasul ialah <b>Siddiq</b> (benar), <b>Amanah</b> (dipercayai), <b>Tabligh</b> (menyampaikan) dan <b>Fatanah</b> (bijaksana).</p>` },
+{ q:["berapakah umur nabi ketika menerima wahyu pertama","umur nabi jadi rasul","nabi umur berapa masa jadi rasul"],
+  a:`<p>Nabi Muhammad ﷺ menerima wahyu pertama ketika berusia <b>40 tahun</b>.</p>` },
+{ q:["berapakah umur nabi muhammad ketika wafat","umur nabi wafat","nabi umur berapa masa meninggal"],
+  a:`<p>Nabi Muhammad ﷺ wafat ketika berusia <b>63 tahun</b>.</p>` },
+{ q:["di manakah nabi muhammad wafat","nabi wafat kat mana","tempat wafat nabi"],
+  a:`<p>Baginda wafat di <b>Madinah al-Munawwarah</b>.</p>` },
+{ q:["di manakah nabi muhammad dikebumikan","kubur nabi","makam nabi","masjid nabawi","nabi dikebumikan kat mana"],
+  a:`<p>Baginda dikebumikan di kamar Saidatina Aisyah RA, yang kini berada dalam kawasan <b>Masjid Nabawi</b>, Madinah.</p>` },
+{ q:["apakah bahasa nabi muhammad","bahasa yang digunakan nabi"],
+  a:`<p>Bahasa yang digunakan Nabi Muhammad ﷺ ialah <b>Bahasa Arab</b>.</p>` },
+{ q:["apakah kitab yang diturunkan kepada nabi muhammad","kitab suci nabi"],
+  a:`<p>Kitab yang diturunkan kepada Nabi Muhammad ﷺ ialah <b>Al-Quran</b>.</p>` },
+
+/* ---------------- 3. Kelahiran Nabi ﷺ ---------------- */
+{ q:["apakah tahun gajah","mengapa disebut tahun gajah","siapakah abraha","apa berlaku kepada tentera abraha","surah al fil"],
+  a:`<p>Nabi Muhammad ﷺ dilahirkan pada <b>Tahun Gajah</b>, dinamakan sempena peristiwa <b>Abrahah</b> (pemerintah Yaman) yang cuba memusnahkan Kaabah menggunakan pasukan bergajah. Menurut Surah Al-Fil, Allah menghantar burung Ababil yang melemparkan batu daripada sijjil sehingga tentera tersebut binasa.</p>` },
+{ q:["siapakah ibu susuan nabi","siapa susukan nabi","halimah as-sa'diyah","ibu susu nabi","siapa jaga nabi selepas kelahiran"],
+  a:`<p>Ibu susuan Nabi Muhammad ﷺ ialah <b>Halimah binti Abi Zu'aib (Halimah As-Sa'diyah)</b> daripada suku Bani Sa'ad. Baginda dihantar untuk disusukan dan dibesarkan di pedalaman mengikut adat masyarakat Arab ketika itu, sebelum kembali kepada ibunya Aminah.</p>` },
+{ q:["nabi yatim","yatim piatu","nabi anak yatim","bila ibu nabi wafat","siapa jaga nabi selepas ibu wafat"],
+  a:`<p>Nabi Muhammad ﷺ menjadi <b>yatim</b> sejak sebelum dilahirkan (bapanya wafat semasa Baginda dalam kandungan), dan menjadi <b>yatim piatu</b> sepenuhnya ketika ibunya wafat pada usia sekitar 6 tahun. Baginda kemudian dijaga oleh datuknya Abdul Muttalib, dan selepas itu oleh bapa saudaranya Abu Talib.</p>` },
+
+/* ---------------- 4. Zaman Kanak-kanak dan Remaja ---------------- */
+{ q:["apakah pekerjaan nabi ketika muda","nabi pernah menjadi penggembala kambing","adakah nabi pernah berniaga","nabi berniaga","pekerjaan nabi sebelum jadi rasul"],
+  a:`<p>Ketika muda, Nabi Muhammad ﷺ pernah menjadi <b>penggembala kambing</b>, kemudian bekerja sebagai <b>peniaga/pedagang</b>, terkenal dengan sifat jujur dan amanah dalam urus niaga.</p>` },
+{ q:["siapakah yang membawa nabi dalam perjalanan perdagangan","abu talib bawa nabi berniaga syam"],
+  a:`<p>Bapa saudaranya, <b>Abu Talib</b>, pernah membawa Baginda dalam perjalanan perdagangan ke Syam ketika Baginda masih muda.</p>` },
+{ q:["apakah sifat nabi ketika muda","adakah nabi pernah menyembah berhala"],
+  a:`<p>Baginda terkenal dengan sifat amanah, jujur, dan baik hati sejak muda, serta <b>tidak pernah menyembah berhala</b> seperti amalan jahiliah masyarakat Makkah ketika itu.</p>` },
+{ q:["apakah hilf al-fudul","adakah nabi terlibat dalam hilf al fudul"],
+  a:`<p><b>Hilf al-Fudul</b> ialah satu perjanjian yang bertujuan membela orang yang dizalimi di Makkah. Nabi Muhammad ﷺ pernah menyertai perjanjian ini ketika masih muda.</p>` },
+
+/* ---------------- 5. Perkahwinan & Keluarga ---------------- */
+{ q:["siapakah isteri pertama nabi muhammad","siapa isteri pertama nabi","khadijah binti khuwailid"],
+  a:`<p>Isteri pertama Nabi Muhammad ﷺ ialah <b>Saidatina Khadijah binti Khuwailid RA</b>, yang juga merupakan orang pertama yang beriman kepada Baginda.</p>` },
+{ q:["berapakah umur nabi ketika berkahwin dengan khadijah","umur nabi kahwin","bila nabi kahwin"],
+  a:`<p>Nabi Muhammad ﷺ berkahwin dengan Khadijah RA ketika Baginda berusia sekitar <b>25 tahun</b>, manakala Khadijah RA menurut riwayat masyhur berusia sekitar 40 tahun ketika itu.</p>` },
+{ q:["berapa orang anak nabi muhammad","nabi ada berapa anak","siapakah anak lelaki nabi","siapakah anak perempuan nabi","siapa anak nabi"],
+  a:`<p>Menurut riwayat masyhur, Nabi Muhammad ﷺ mempunyai <b>tujuh orang anak</b> bersama Khadijah RA:</p><ul><li>Anak lelaki — Al-Qasim, Abdullah dan Ibrahim</li><li>Anak perempuan — Zainab, Ruqayyah, Ummu Kulthum dan Fatimah RA</li></ul>` },
+{ q:["siapakah anak nabi yang paling terkenal","fatimah al zahra"],
+  a:`<p>Anak Nabi Muhammad ﷺ yang paling dikenali ialah <b>Fatimah az-Zahra' RA</b>, yang meneruskan zuriat Baginda.</p>` },
+{ q:["siapakah cucu nabi muhammad","hasan dan husain","siapa cucu nabi"],
+  a:`<p>Antara cucu Nabi Muhammad ﷺ yang terkenal ialah <b>Hasan</b> dan <b>Husain RA</b>, anak kepada Fatimah RA dan Ali bin Abi Talib RA.</p>` },
+{ q:["siapakah menantu nabi yang terkenal","suami fatimah","ali bin abi talib menantu nabi"],
+  a:`<p><b>Ali bin Abi Talib RA</b> ialah menantu Nabi Muhammad ﷺ melalui perkahwinannya dengan Fatimah RA.</p>` },
+{ q:["nabi ada berapa isteri","berapa bilangan isteri nabi","nabi ada 12 isteri ke"],
+  a:`<p>Nabi Muhammad ﷺ mempunyai beberapa orang isteri sepanjang kehidupan Baginda. Riwayat sirah yang masyhur menyenaraikan <b>11 isteri</b> yang dinikahi Baginda, walaupun terdapat sedikit perbezaan cara pengiraan dalam sesetengah riwayat.</p>` },
+{ q:["siapakah bapa saudara nabi","hamzah bin abdul muttalib","abu lahab siapa"],
+  a:`<p>Antara bapa saudara Nabi Muhammad ﷺ ialah <b>Abu Talib</b> (yang membelanya), <b>Hamzah bin Abdul Muttalib</b> (pahlawan Islam yang syahid dalam Perang Uhud), dan <b>Abu Lahab</b> (yang menentang dakwah Baginda).</p>` },
+
+/* ---------------- 6. Wahyu Pertama ---------------- */
+{ q:["di manakah nabi menerima wahyu pertama","gua hira","tempat wahyu pertama"],
+  a:`<p>Nabi Muhammad ﷺ menerima wahyu pertama di <b>Gua Hira'</b>.</p>` },
+{ q:["apakah wahyu pertama","surah pertama diturunkan","maksud iqra"],
+  a:`<p>Wahyu pertama ialah ayat awal <b>Surah Al-'Alaq</b>, bermula dengan perintah <b>"Iqra'"</b> yang bermaksud "bacalah".</p>` },
+{ q:["siapakah malaikat yang menyampaikan wahyu","siapa jibril"],
+  a:`<p><b>Malaikat Jibril AS</b> ialah malaikat yang menyampaikan wahyu Allah kepada Nabi Muhammad ﷺ dan para nabi.</p>` },
+{ q:["apa perasaan nabi selepas menerima wahyu pertama","siapakah yang menenangkan nabi"],
+  a:`<p>Selepas menerima wahyu pertama, Baginda pulang dalam keadaan gementar dan meminta <b>Khadijah RA</b> menyelimutkannya. Khadijah RA lah yang menenangkan dan menyokong Baginda ketika itu.</p>` },
+{ q:["siapakah waraqah bin naufal"],
+  a:`<p><b>Waraqah bin Naufal</b> ialah seorang yang mengetahui kitab-kitab terdahulu, dan memberikan pandangan kepada Nabi Muhammad ﷺ selepas peristiwa wahyu pertama.</p>` },
+
+/* ---------------- 7. Dakwah Nabi ﷺ ---------------- */
+{ q:["apakah dakwah nabi muhammad","apa dakwah nabi"],
+  a:`<p>Dakwah Nabi Muhammad ﷺ menyeru manusia menyembah <b>Allah Yang Esa</b> dan meninggalkan syirik serta kemungkaran.</p>` },
+{ q:["berapa lama nabi berdakwah di makkah","berapa lama nabi berdakwah di madinah","berapa lama keseluruhan tempoh kerasulan nabi","tempoh dakwah nabi"],
+  a:`<p>Nabi Muhammad ﷺ berdakwah selama <b>13 tahun di Makkah</b> dan <b>10 tahun di Madinah</b> — keseluruhan tempoh risalah kenabian Baginda selama <b>23 tahun</b> (610–632 Masihi).</p>` },
+{ q:["siapakah orang pertama beriman kepada nabi","siapa org pertama masuk islam"],
+  a:`<p>Orang pertama beriman kepada Nabi Muhammad ﷺ ialah <b>Khadijah RA</b> (kalangan wanita), <b>Abu Bakar RA</b> (kalangan lelaki dewasa), <b>Ali RA</b> (kalangan kanak-kanak), dan <b>Zaid bin Harithah RA</b> (kalangan hamba yang dibebaskan).</p>` },
+{ q:["bagaimana nabi berdakwah pada peringkat awal","apakah pusat dakwah awal umat islam","dar al arqam"],
+  a:`<p>Dakwah dilakukan secara sembunyi pada peringkat awal sebelum dakwah secara terbuka. <b>Dar al-Arqam</b> menjadi tempat penting untuk pembelajaran dan dakwah umat Islam ketika itu.</p>` },
+{ q:["mengapa quraisy menentang nabi","adakah nabi dihina oleh quraisy","nabi pernah kena hina","adakah nabi pernah dibaling batu","nabi berdakwah di taif"],
+  a:`<p>Quraisy menentang Nabi Muhammad ﷺ kerana dakwah tauhid Baginda bertentangan dengan kepercayaan dan kepentingan masyarakat Quraisy. Baginda dan para sahabat menghadapi pelbagai bentuk penentangan dan penganiayaan, termasuk peristiwa terkenal ketika Baginda dibaling batu semasa berdakwah di <b>Taif</b>.</p>` },
+
+/* ---------------- 8. Isra' dan Mikraj ---------------- */
+{ q:["apakah isra dan mikraj","apa itu isra mikraj"],
+  a:`<p><b>Isra'</b> ialah perjalanan Nabi Muhammad ﷺ dari Masjid al-Haram ke Masjid al-Aqsa, manakala <b>Mikraj</b> ialah perjalanan Baginda naik ke langit — kedua-duanya berlaku dalam satu malam.</p>` },
+{ q:["dengan apa nabi melakukan perjalanan isra","buraq"],
+  a:`<p>Nabi Muhammad ﷺ melakukan perjalanan Isra' dengan <b>Buraq</b>, dari Masjid al-Haram ke Masjid al-Aqsa.</p>` },
+{ q:["apakah peristiwa penting dalam mikraj","berapa waktu solat diwajibkan","asal usul kewajipan solat lima waktu"],
+  a:`<p>Antara peristiwa penting dalam Mikraj ialah Nabi Muhammad ﷺ menerima kewajipan <b>solat lima waktu</b> sehari semalam. Kewajipan asalnya lebih banyak sebelum diringankan menjadi lima waktu dengan ganjaran seperti lima puluh.</p>` },
+{ q:["apakah pengajaran isra dan mikraj"],
+  a:`<p>Antara pengajaran Isra' dan Mikraj ialah kepentingan <b>solat</b> dan keimanan kepada perkara ghaib.</p>` },
+
+/* ---------------- 9. Hijrah ke Madinah ---------------- */
+{ q:["apakah maksud hijrah","mengapa nabi berhijrah","kenapa hijrah"],
+  a:`<p><b>Hijrah</b> ialah perpindahan Nabi Muhammad ﷺ dan para sahabat dari Makkah ke Madinah pada tahun 622 Masihi, bagi mempertahankan agama dan meneruskan dakwah, kerana tekanan dan penganiayaan di Makkah semakin berat.</p>` },
+{ q:["siapakah teman nabi ketika hijrah","di manakah nabi dan abu bakar bersembunyi ketika hijrah","gua thur","berapa lama mereka berada di gua thur"],
+  a:`<p>Teman Nabi Muhammad ﷺ ketika hijrah ialah <b>Abu Bakar al-Siddiq RA</b>. Mereka bersembunyi di <b>Gua Thur</b> selama sekitar tiga malam sebelum meneruskan perjalanan ke Madinah.</p>` },
+{ q:["siapakah yang tidur di tempat nabi ketika baginda keluar dari makkah","ali tidur ganti tempat nabi"],
+  a:`<p><b>Ali bin Abi Talib RA</b> tidur di tempat Nabi Muhammad ﷺ ketika Baginda keluar meninggalkan Makkah semasa peristiwa hijrah.</p>` },
+{ q:["siapakah asma binti abu bakar"],
+  a:`<p><b>Asma' binti Abu Bakar RA</b> membantu menyediakan bekalan untuk Nabi Muhammad ﷺ dan Abu Bakar RA ketika peristiwa hijrah.</p>` },
+{ q:["ke manakah nabi berhijrah","apakah nama lama madinah","yathrib"],
+  a:`<p>Nabi Muhammad ﷺ berhijrah ke <b>Madinah</b>, yang dahulunya dikenali dengan nama <b>Yathrib</b>.</p>` },
+{ q:["siapakah kaum ansar","siapakah kaum muhajirin"],
+  a:`<p><b>Ansar</b> ialah penduduk Madinah yang membantu dan menyokong Nabi Muhammad ﷺ serta kaum Muhajirin. <b>Muhajirin</b> pula ialah orang Islam dari Makkah yang berhijrah ke Madinah.</p>` },
+{ q:["apakah masjid pertama yang dibina nabi selepas hijrah","masjid quba","apakah masjid utama yang dibina nabi di madinah"],
+  a:`<p>Masjid pertama yang dibina Nabi Muhammad ﷺ selepas hijrah ialah <b>Masjid Quba</b>, manakala masjid utama yang dibina Baginda di Madinah ialah <b>Masjid Nabawi</b>.</p>` },
+
+/* ---------------- 10. Perang dan Peristiwa Penting ---------------- */
+{ q:["apakah perang badar","bilakah perang badar berlaku","siapakah yang menang dalam perang badar"],
+  a:`<p><b>Perang Badar</b> ialah peperangan besar pertama antara umat Islam dan Quraisy selepas hijrah, berlaku pada tahun <b>2 Hijrah</b>. Tentera Islam mencapai kemenangan dalam peperangan ini.</p>` },
+{ q:["apakah perang uhud","bilakah perang uhud berlaku","nabi pernah kalah perang"],
+  a:`<p><b>Perang Uhud</b> berlaku pada tahun <b>3 Hijrah</b> berhampiran Gunung Uhud. Umat Islam mengalami kekalahan dari sudut ketenteraan dalam peperangan ini selepas beberapa kesilapan taktikal berlaku, walaupun terdapat banyak pengajaran daripada peristiwa tersebut.</p>` },
+{ q:["siapakah hamzah bin abdul muttalib","bagaimana hamzah wafat"],
+  a:`<p><b>Hamzah bin Abdul Muttalib</b> ialah bapa saudara Nabi Muhammad ﷺ dan seorang pejuang Islam yang terkenal. Beliau syahid dalam <b>Perang Uhud</b>.</p>` },
+{ q:["apakah perang khandaq","siapakah yang mencadangkan strategi parit","salman al farisi"],
+  a:`<p><b>Perang Khandaq</b> ialah peperangan mempertahankan Madinah dengan strategi menggali parit, dicadangkan oleh sahabat Nabi, <b>Salman al-Farisi RA</b>.</p>` },
+{ q:["apakah perjanjian hudaibiyah"],
+  a:`<p><b>Perjanjian Hudaibiyah</b> ialah perjanjian antara Nabi Muhammad ﷺ dan Quraisy yang berlaku pada tahun <b>6 Hijrah</b>.</p>` },
+{ q:["apakah pembukaan makkah","adakah nabi membalas dendam kepada penduduk makkah"],
+  a:`<p><b>Pembukaan Makkah</b> ialah peristiwa apabila umat Islam memasuki dan menguasai Makkah pada tahun <b>8 Hijrah</b>. Nabi Muhammad ﷺ tidak membalas dendam, bahkan memberikan pengampunan kepada ramai penduduk Makkah selepas pembukaan kota tersebut.</p>` },
+{ q:["apakah perang hunain","apakah perang tabuk"],
+  a:`<p><b>Perang Hunain</b> ialah peperangan antara umat Islam dengan beberapa kabilah Arab selepas Pembukaan Makkah. <b>Perang Tabuk</b> pula ialah ekspedisi besar umat Islam ke arah Tabuk pada tahun 9 Hijrah.</p>` },
+
+/* ---------------- 11. Akhlak Nabi ﷺ ---------------- */
+{ q:["apakah akhlak nabi muhammad","nabi seorang yang macam mana","adakah nabi seorang yang penyayang","adakah nabi seorang yang pemaaf","adakah nabi seorang yang sabar"],
+  a:`<p>Nabi Muhammad ﷺ terkenal dengan akhlak mulia — <b>jujur, amanah, penyayang, penyabar, berani dan pemaaf</b>. Baginda sangat menyayangi keluarga, sahabat, kanak-kanak dan umatnya, serta tidak membalas kejahatan dengan kejahatan.</p>` },
+{ q:["adakah nabi seorang yang rendah hati"],
+  a:`<p>Ya. Walaupun seorang Rasul dan pemimpin, Nabi Muhammad ﷺ hidup dengan penuh kesederhanaan dan rendah hati.</p>` },
+{ q:["apakah contoh sifat amanah nabi","apakah maksud al amin","apakah maksud al siddiq"],
+  a:`<p>Masyarakat Quraisy sendiri mengakui kejujuran dan amanah Baginda sebelum kerasulan — sehingga digelar <b>Al-Amin</b> (orang yang sangat dipercayai). <b>Al-Siddiq</b> pula bermaksud orang yang benar dan sentiasa berkata benar.</p>` },
+{ q:["adakah nabi suka membantu orang","bagaimana nabi melayan orang miskin","bagaimana nabi melayan jiran"],
+  a:`<p>Nabi Muhammad ﷺ menggalakkan umat membantu dan berbuat baik kepada orang lain, mengambil berat terhadap golongan miskin, serta menekankan kepentingan berbuat baik kepada jiran.</p>` },
+{ q:["nabi pernah marah","nabi pernah menangis","nabi sayang umat dia"],
+  a:`<p>Nabi Muhammad ﷺ mempunyai perasaan seperti manusia — Baginda pernah marah, namun kemarahan Baginda dikawal dan berkaitan perkara kebenaran, bukan kepentingan diri. Baginda juga pernah menangis kerana kasih sayang, kesedihan dan rasa takut kepada Allah, dan sentiasa mengambil berat serta menginginkan kebaikan untuk umatnya.</p>` },
+
+/* ---------------- 12. Fizikal Nabi ﷺ ---------------- */
+{ q:["bagaimanakah rupa nabi muhammad","apakah warna kulit nabi","bagaimana rambut nabi","adakah nabi mempunyai janggut","bagaimana cara nabi berjalan","adakah nabi tinggi","bagaimana suara nabi"],
+  a:`<p>Menurut riwayat para sahabat, Nabi Muhammad ﷺ:</p><ul><li>Berwajah tampan dan bercahaya</li><li>Berkulit cerah dengan rona kemerah-merahan</li><li>Berambut hitam dan berjanggut</li><li>Bertubuh sederhana — tidak terlalu tinggi dan tidak terlalu rendah</li><li>Berjalan dengan penuh kewibawaan, dan bersuara jelas serta merdu</li></ul>` },
+
+/* ---------------- 13. Mukjizat Nabi ﷺ ---------------- */
+{ q:["apakah mukjizat nabi muhammad yang terbesar","mukjizat utama nabi"],
+  a:`<p>Mukjizat terbesar Nabi Muhammad ﷺ ialah <b>Al-Quran</b> — kitab suci yang kekal terpelihara sehingga kini sebagai bukti kenabian Baginda.</p>` },
+{ q:["apakah mukjizat lain nabi","adakah bulan terbelah pada zaman nabi","mukjizat air keluar dari jari nabi","adakah makanan pernah menjadi banyak melalui nabi"],
+  a:`<p>Selain Al-Quran, antara mukjizat lain Nabi Muhammad ﷺ yang diriwayatkan termasuk peristiwa <b>Isra' dan Mikraj</b>, <b>pembelahan bulan</b> (disebut dalam Al-Quran dan hadis), <b>air yang keluar dari celah jari Baginda</b>, serta beberapa riwayat tentang <b>keberkatan makanan</b> melalui Baginda.</p>` },
+
+/* ---------------- 14. Nabi dan Para Sahabat ---------------- */
+{ q:["siapakah sahabat paling rapat dengan nabi","siapakah umar al khattab","siapakah uthman bin affan","siapakah ali bin abi talib","khulafa rasyidin","siapa sahabat baik nabi"],
+  a:`<p>Antara sahabat terdekat dan pengganti kepimpinan (Khulafa Rasyidin) selepas Baginda ialah <b>Abu Bakar as-Siddiq RA</b> (khalifah pertama, sahabat paling rapat), <b>Umar al-Khattab RA</b> (khalifah kedua), <b>Uthman bin Affan RA</b> (khalifah ketiga), dan <b>Ali bin Abi Talib RA</b> (sepupu & menantu Baginda, khalifah keempat).</p>` },
+{ q:["siapakah bilal bin rabah"],
+  a:`<p><b>Bilal bin Rabah RA</b> ialah sahabat Nabi Muhammad ﷺ yang terkenal sebagai muazzin (pelaung azan) pertama dalam Islam.</p>` },
+{ q:["siapakah abu hurairah"],
+  a:`<p><b>Abu Hurairah RA</b> ialah sahabat Nabi Muhammad ﷺ yang paling banyak meriwayatkan hadis daripada Baginda.</p>` },
+{ q:["siapakah zaid bin harithah"],
+  a:`<p><b>Zaid bin Harithah RA</b> ialah sahabat yang sangat rapat dengan Nabi Muhammad ﷺ, dan pernah dianggap sebagai anak angkat Baginda sebelum hukum berkaitan anak angkat diperincikan dalam Islam.</p>` },
+
+/* ---------------- 16. Tahun-Tahun Akhir Nabi ﷺ ---------------- */
+{ q:["bilakah nabi menunaikan haji wada","apakah haji wada","apakah khutbah wada","apakah pesan nabi dalam haji wada"],
+  a:`<p><b>Haji Wada'</b> ialah haji terakhir yang dilakukan oleh Nabi Muhammad ﷺ, pada tahun <b>10 Hijrah</b>. Dalam <b>Khutbah Wada'</b>, Baginda menyampaikan banyak pesanan penting kepada umat Islam, antaranya menjaga hak manusia, darah dan harta, serta melayan wanita dengan baik.</p>` },
+{ q:["bilakah nabi wafat","siapakah yang menjaga nabi ketika sakit","siapakah khalifah pertama selepas nabi","apakah perkara yang nabi tinggalkan untuk umat"],
+  a:`<p>Nabi Muhammad ﷺ wafat pada tahun <b>11 Hijrah</b> di Madinah, ketika berusia 63 tahun. Baginda berada di rumah Saidatina Aisyah RA pada hari-hari terakhirnya. Selepas kewafatan Baginda, <b>Abu Bakar al-Siddiq RA</b> menjadi khalifah pertama. Baginda meninggalkan <b>Al-Quran dan sunnah</b> sebagai panduan kehidupan umat Islam.</p>` },
+
+/* ---------------- Soalan tambahan & "tricky" ---------------- */
+{ q:["makanan kegemaran nabi","apa makanan kegemaran nabi"],
+  a:`<p>Terdapat beberapa makanan yang disebut dalam hadis sebagai makanan yang disukai atau dimakan Baginda, seperti <b>madu, kurma dan labu</b>. Namun tiada satu makanan yang boleh dipastikan sebagai "paling digemari" secara pasti.</p>` },
+{ q:["nabi suka kucing","kucing nabi"],
+  a:`<p>Terdapat kisah popular tentang Nabi Muhammad ﷺ dan kucing, namun banyak cerita yang tersebar tentang "kucing Nabi" tidak mempunyai sandaran riwayat yang sahih. Perkara ini perlu dilihat dengan berhati-hati.</p>` },
+{ q:["nabi boleh nampak malaikat","nabi pernah melihat jibril"],
+  a:`<p>Ya. Nabi Muhammad ﷺ menerima wahyu melalui Malaikat Jibril AS, dan menurut riwayat yang sahih, Baginda pernah melihat Jibril dalam bentuk asalnya.</p>` },
+{ q:["nabi boleh baca dan tulis","adakah nabi ummi"],
+  a:`<p>Dalam Al-Quran, Nabi Muhammad ﷺ disebut sebagai <b>ummi</b>. Para ulama membincangkan maksudnya secara terperinci, namun umat Islam umumnya memahami bahawa Baginda tidak belajar membaca dan menulis seperti orang yang mendapat pendidikan formal sebelum kenabian.</p>` },
+{ q:["nabi pernah buat dosa","adakah nabi maksum"],
+  a:`<p>Nabi Muhammad ﷺ adalah <b>maksum</b> dalam konteks yang dijelaskan oleh akidah Islam — Baginda dipelihara Allah dalam menyampaikan risalah. Terdapat perbahasan ulama tentang perkara tertentu yang disebut sebagai <i>zallat</i> (teguran halus Allah kepada para nabi), namun ini berbeza daripada dosa dalam pengertian biasa.</p>` },
+{ q:["nabi manusia atau malaikat"],
+  a:`<p>Nabi Muhammad ﷺ ialah <b>manusia</b> biasa yang dipilih Allah sebagai Rasul-Nya, bukan malaikat.</p>` }
 ];
 
-function normalize(str){ return str.toLowerCase().replace(/[?.,!]/g,"").replace(/\s+/g," ").trim(); }
+/* ================================================================
+   Matching engine — token-overlap scoring (works well for voice
+   input, which rarely matches keyword phrasing exactly)
+   ================================================================ */
+function normalize(str){ return str.toLowerCase().replace(/[?.,!'"]/g,"").replace(/\s+/g," ").trim(); }
 
-/* words that signal the question is at least within the Prophet/Maulid topic area,
-   even if we don't have a prepared answer for the specific detail asked */
+const STOPWORDS = new Set(["apa","apakah","siapa","siapakah","adakah","bagaimana","bagaimanakah",
+  "bila","bilakah","kenapa","mengapa","berapa","berapakah","di","ke","dari","daripada","dan","atau",
+  "yang","ialah","adalah","untuk","dengan","pada","dalam","itu","ini","ada","nak","tak","tu","ni",
+  "je","lah","pun","kat","punya","boleh","macam","pernah","saya","kita","kami","ya","tidak"]);
+
+function tokenize(str){
+  return normalize(str).split(" ").filter(w => w.length > 1 && !STOPWORDS.has(w));
+}
+
+function matchFixed(query){
+  const qTokens = tokenize(query);
+  if(!qTokens.length) return null;
+  let best = null, bestScore = 0;
+  for(const entry of FIXED_QA){
+    for(const qText of entry.q){
+      const eTokens = tokenize(qText);
+      if(!eTokens.length) continue;
+      let hits = 0;
+      eTokens.forEach(t => { if(qTokens.includes(t)) hits++; });
+      const score = hits / eTokens.length;
+      if(score > bestScore){ bestScore = score; best = entry; }
+    }
+  }
+  return bestScore >= 0.6 ? best : null;
+}
+
+/* words that signal the question is at least within the Prophet/Maulid
+   topic area, even if we don't have a prepared answer for that exact detail */
 const TOPIC_KEYWORDS = ["nabi","rasul","muhammad","maulid","sirah","selawat","hijrah",
   "sahabat","quran","khadijah","aisyah","fatimah","makkah","mekah","madinah","kaabah",
   "wahyu","dakwah","abdullah","aminah","abu bakar","umar","uthman","ali bin","abu talib",
-  "abdul muttalib","halimah","gua hira","islam","masjid","israk","mikraj","khulafa",
-  "quraisy","bani hasyim","yatim","susuan"];
+  "abdul muttalib","halimah","gua hira","islam","masjid","israk","isra","mikraj","khulafa",
+  "quraisy","bani hasyim","yatim","susuan","perang","badar","uhud","khandaq","hudaibiyah",
+  "hunain","tabuk","haji wada","khutbah","jibril","waraqah","bilal","abu hurairah","salman",
+  "zaid","hamzah","abu lahab","ansar","muhajirin","yathrib","quba","nabawi","akhlak",
+  "mukjizat","ababil","abrahah","tahun gajah","buraq","aqsa","haram","ummi"];
 
 function isOnTopic(query){
   const q = normalize(query);
   return TOPIC_KEYWORDS.some(k => q.includes(k));
 }
 
-function matchFixed(query){
-  const q = normalize(query);
-  let best = null, bestScore = 0;
-  for(const entry of FIXED_QA){
-    for(const kw of entry.keywords){
-      const words = kw.split(" ");
-      let hits = 0;
-      words.forEach(w => { if(q.includes(w)) hits++; });
-      const score = hits / words.length;
-      if(score > bestScore){ bestScore = score; best = entry; }
-    }
-  }
-  return bestScore >= 0.5 ? best : null;
-}
-
-/* ================= AI fallback (scoped) ================= */
-async function askAI(query){
-  const systemPrompt = `Anda ialah pembantu maklumat yang PAKAR KHUSUS dalam topik Maulidur Rasul sahaja — meliputi: sirah dan riwayat hidup Nabi Muhammad ﷺ, sejarah dan asal-usul sambutan Maulid, hukum dan pandangan ulama mengenainya, adat dan amalan sambutan (khususnya di Malaysia/Nusantara), selawat, dan hikmah di sebaliknya.
-
-ATURAN KETAT:
-- Jawab HANYA dalam Bahasa Melayu.
-- Jika soalan di luar skop ini, TOLAK dengan sopan dan arahkan pengguna kembali bertanya soal Maulidur Rasul. Jangan cuba jawab topik luar skop walau sedikit.
-- Jawapan mesti ringkas (maksimum 4-5 ayat atau senarai pendek) kerana akan dipaparkan dalam saiz besar di skrin kiosk dan turut dibacakan secara lisan.
-- Jika ada khilaf ulama, nyatakan secara neutral tanpa memihak.
-- Format ringkas: guna perenggan pendek. Boleh guna "- " di awal baris untuk senarai jika sesuai.
-- Jangan reka fakta sejarah.`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 700,
-      system: systemPrompt,
-      messages: [{ role: "user", content: query }]
-    })
-  });
-  const data = await response.json();
-  const text = (data.content || []).map(b => b.type === "text" ? b.text : "").join("\n").trim();
-  return text || "Maaf, saya tidak dapat menjana jawapan buat masa ini. Sila cuba semula.";
-}
-
 function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-function formatAIText(text){
-  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-  let html = ""; let inList = false;
-  for(const line of lines){
-    if(line.startsWith("- ") || line.startsWith("• ")){
-      if(!inList){ html += "<ul>"; inList = true; }
-      html += `<li>${escapeHtml(line.replace(/^[-•]\s*/,""))}</li>`;
-    } else {
-      if(inList){ html += "</ul>"; inList = false; }
-      html += `<p>${escapeHtml(line)}</p>`;
-    }
-  }
-  if(inList) html += "</ul>";
-  return html;
-}
 
 function htmlToSpeechText(html){
   const tmp = document.createElement("div");
@@ -484,39 +614,19 @@ function htmlToSpeechText(html){
 /* ================= Text-to-Speech ================= */
 let voices = [];
 function loadVoices(){ voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : []; }
-function updateVoiceNotice(){
-  const el = document.getElementById("voiceNotice");
-  if(!el) return;
-  if(!window.speechSynthesis){ el.textContent = ""; return; }
-  if(hasMalayVoice()){
-    const v = pickVoice();
-    el.textContent = `Suara: ${v.name.replace(/^Microsoft |^Google /,"")}`;
-    populateVoiceSelect();
-  } else {
-    el.textContent = "Nota: tiada suara Bahasa Melayu dikesan pada peranti ini. Pasang pek suara Bahasa Melayu dalam Settings > Text-to-speech.";
-  }
-}
-if(window.speechSynthesis){
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = () => { loadVoices(); updateVoiceNotice(); };
-  setTimeout(updateVoiceNotice, 400);
-}
+
 const VOICE_PREF_KEY = "maulid_kiosk_voice_name";
 
-function malayVoices(){
-  return voices.filter(v => v.lang && v.lang.toLowerCase().startsWith("ms"));
-}
+function malayVoices(){ return voices.filter(v => v.lang && v.lang.toLowerCase().startsWith("ms")); }
 function hasMalayVoice(){ return malayVoices().length > 0; }
 
 function pickVoice(){
   if(!voices.length) return null;
-  // 1. Respect a voice the user explicitly chose from the dropdown
   const savedName = localStorage.getItem(VOICE_PREF_KEY);
   if(savedName){
     const saved = voices.find(v => v.name === savedName);
     if(saved) return saved;
   }
-  // 2. Otherwise prioritise real Bahasa Melayu voices, preferring a male-sounding one
   const msVoices = malayVoices();
   if(msVoices.length){
     const male = msVoices.find(v => /osman|male|lelaki/i.test(v.name));
@@ -546,11 +656,28 @@ function populateVoiceSelect(){
     updateVoiceNotice();
   };
 }
-let lastSpeechText = "";
+
+function updateVoiceNotice(){
+  const el = document.getElementById("voiceNotice");
+  if(!el) return;
+  if(!window.speechSynthesis){ el.textContent = ""; return; }
+  if(hasMalayVoice()){
+    const v = pickVoice();
+    el.textContent = `Suara: ${v.name.replace(/^Microsoft |^Google /,"")}`;
+    populateVoiceSelect();
+  } else {
+    el.textContent = "Nota: tiada suara Bahasa Melayu dikesan pada peranti ini. Pasang pek suara Bahasa Melayu dalam Settings > Text-to-speech.";
+  }
+}
+if(window.speechSynthesis){
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = () => { loadVoices(); updateVoiceNotice(); };
+  setTimeout(updateVoiceNotice, 400);
+}
+
 function speak(text){
   if(!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  lastSpeechText = text;
   const utter = new SpeechSynthesisUtterance(text);
   const v = pickVoice();
   if(v) utter.voice = v;
@@ -592,7 +719,7 @@ function showIdle(){
   loadingBlock.classList.add("hidden");
   answerBlock.classList.add("hidden");
 }
-function showLoading(question){
+function showLoading(){
   idleBlock.classList.add("hidden");
   loadingBlock.classList.remove("hidden");
   answerBlock.classList.add("hidden");
@@ -609,7 +736,6 @@ function showAnswer(question, html, tag){
   speak(htmlToSpeechText(html));
 }
 
-/* auto shrink font so long answers still fit nicely on a kiosk screen */
 function fitAnswerText(){
   const el = stageAnswerText;
   let size = window.innerWidth < 700 ? 30 : 58;
@@ -625,22 +751,17 @@ function fitAnswerText(){
 window.addEventListener("resize", () => { if(!answerBlock.classList.contains("hidden")) fitAnswerText(); });
 
 /* ================= Query handling ================= */
-let currentQuestion = "";
-
-async function submitQuery(query){
+function submitQuery(query){
   query = query.trim();
   if(!query) return;
-  currentQuestion = query;
-  showLoading(query);
+  showLoading();
 
   const fixed = matchFixed(query);
   if(fixed){
-    showAnswer(query, fixed.answer, "FIXED");
+    showAnswer(query, fixed.a, "FIXED");
     return;
   }
 
-  // No backend/API key once hosted outside claude.ai, so we rely fully on the
-  // curated reference set. Give a clear, courteous message either way.
   let fallback;
   if(isOnTopic(query)){
     fallback = `<p>Maaf, saya tidak dapat menjawab soalan tersebut buat masa ini.</p><p>Sila cuba soalan dalam bentuk lain, atau pilih salah satu soalan cadangan di bawah.</p>`;
@@ -678,9 +799,9 @@ textForm.addEventListener("submit", (e) => {
 const chipsEl = document.getElementById("chips");
 const SUGGESTED = [
   "Apa itu Maulidur Rasul?",
-  "Bila tarikh sebenar Maulidur Rasul?",
-  "Bagaimana Malaysia sambut Maulidur Rasul?",
-  "Apakah hikmah sambutan ini?"
+  "Bila tarikh Maulidur Rasul disambut?",
+  "Siapakah ibu bapa Nabi Muhammad?",
+  "Apakah akhlak Nabi Muhammad?"
 ];
 SUGGESTED.forEach(q => {
   const b = document.createElement("button");
@@ -690,7 +811,9 @@ SUGGESTED.forEach(q => {
   chipsEl.appendChild(b);
 });
 
-/* ---------- Speech recognition (voice input) ---------- */
+/* ---------- Speech recognition (voice input) ----------
+   Single tap: press once, speak, and it auto-submits once you stop
+   talking (a short pause) — no need to tap again. */
 const orbBtn = document.getElementById("orbBtn");
 const micStatus = document.getElementById("micStatus");
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -701,39 +824,42 @@ if(SR){
   recognition = new SR();
   recognition.lang = "ms-MY";
   recognition.interimResults = true;
-  recognition.continuous = true; // keep listening until the user taps the orb again
+  recognition.continuous = false;
+
+  let liveTranscript = "";
 
   recognition.onstart = () => {
     listening = true;
+    liveTranscript = "";
     orbBtn.classList.add("listening");
-    micStatus.textContent = "Mendengar… tekan sekali lagi untuk berhenti";
+    micStatus.textContent = "Mendengar…";
     stopSpeaking();
   };
-  let liveTranscript = "";
+
   recognition.onresult = (e) => {
     liveTranscript = "";
     for(let i=0;i<e.results.length;i++){ liveTranscript += e.results[i][0].transcript; }
-    if(e.results[e.results.length-1].isFinal){
-      micStatus.textContent = `Dikesan: "${liveTranscript}"`;
-    }
+    // live caption: update as the person speaks, not just when final
+    micStatus.textContent = liveTranscript ? `"${liveTranscript}"` : "Mendengar…";
   };
+
   recognition.onerror = (e) => {
     const map = {
       "not-allowed": "Akses mikrofon disekat. Semak Chrome > ikon kunci > Permissions > Microphone > Allow.",
-      "service-not-allowed": "Perkhidmatan suara disekat \u2014 mungkin laman ini dibuka bukan melalui HTTPS.",
-      "network": "Tiada sambungan rangkaian ke perkhidmatan suara Google. Semak internet tablet.",
+      "service-not-allowed": "Perkhidmatan suara disekat — mungkin laman ini dibuka bukan melalui HTTPS.",
+      "network": "Tiada sambungan rangkaian ke perkhidmatan suara Google. Semak internet peranti.",
       "no-speech": "Tiada suara dikesan. Cuba lagi dan bercakap lebih jelas.",
       "audio-capture": "Tiada mikrofon dikesan pada peranti ini.",
       "language-not-supported": "Bahasa Melayu (ms-MY) tidak disokong oleh perkhidmatan pengecaman suara peranti ini."
     };
     micStatus.textContent = map[e.error] || `Ralat pengecaman suara (${e.error}). Sila cuba lagi.`;
   };
+
   recognition.onend = () => {
     listening = false;
     orbBtn.classList.remove("listening");
     if(liveTranscript.trim()){
       submitQuery(liveTranscript);
-      liveTranscript = "";
       micStatus.textContent = "Tekan untuk bertanya secara lisan";
     } else {
       micStatus.textContent = "Tiada suara dikesan. Cuba lagi.";
@@ -742,7 +868,6 @@ if(SR){
 
   orbBtn.addEventListener("click", () => {
     if(listening){ recognition.stop(); return; }
-    liveTranscript = "";
     try{ recognition.start(); }catch(err){}
   });
 } else {
