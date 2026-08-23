@@ -382,10 +382,37 @@ const FIXED_QA = [
   { keywords: ["nabi terakhir","khataman nabiyyin","adakah ada nabi selepas muhammad"],
     answer: `<p>Nabi Muhammad ﷺ adalah <b>Nabi dan Rasul yang terakhir</b> (Khataman Nabiyyin) — tiada lagi nabi yang akan diutuskan selepas Baginda.</p>` },
   { keywords: ["negara lain sambut maulid","sambutan luar negara","mesir sambut maulid","turki sambut maulid","indonesia sambut maulid"],
-    answer: `<p>Sambutan Maulid turut diraikan di banyak negara umat Islam dengan cara berbeza-beza — contohnya perarakan besar-besaran di sesetengah negara Timur Tengah, serta majlis zikir dan selawat di rantau Nusantara seperti Indonesia dan Brunei.</p>` }
+    answer: `<p>Sambutan Maulid turut diraikan di banyak negara umat Islam dengan cara berbeza-beza — contohnya perarakan besar-besaran di sesetengah negara Timur Tengah, serta majlis zikir dan selawat di rantau Nusantara seperti Indonesia dan Brunei.</p>` },
+  { keywords: ["siapa jaga nabi","datuk nabi","abdul muttalib jaga","penjaga nabi selepas ibu meninggal","abu talib jaga nabi"],
+    answer: `<p>Selepas ibunya wafat, Nabi Muhammad ﷺ dijaga oleh datuknya, <b>Abdul Muttalib</b>. Selepas datuknya turut wafat ketika Baginda berusia 8 tahun, Baginda dijaga pula oleh bapa saudaranya, <b>Abu Talib</b>.</p>` },
+  { keywords: ["ibu susuan","halimah","siapa susukan nabi","ibu susu nabi"],
+    answer: `<p>Ibu susuan Nabi Muhammad ﷺ ialah <b>Halimah binti Abi Zu'aib</b>, lebih dikenali sebagai <b>Halimah As-Sa'diyyah</b>, daripada suku Bani Sa'ad. Baginda dihantar untuk disusukan dan dibesarkan di kampung suku tersebut sejak bayi, mengikut adat masyarakat Makkah ketika itu.</p>` },
+  { keywords: ["suku nabi","keturunan nabi","kaum nabi","quraisy","bani hasyim"],
+    answer: `<p>Nabi Muhammad ﷺ berasal daripada suku <b>Quraisy</b>, salah satu suku paling berpengaruh di Makkah, dan lebih khusus daripada keturunan <b>Bani Hasyim</b>.</p>` },
+  { keywords: ["pekerjaan nabi","kerja nabi sebelum jadi rasul","nabi peniaga","nabi berniaga"],
+    answer: `<p>Sebelum menerima kenabian, Nabi Muhammad ﷺ bekerja sebagai <b>peniaga/pedagang</b>, turut membawa barang dagangan ke Syam. Baginda terkenal dengan sifat jujur dan amanah dalam urus niaga, sehingga digelar Al-Amin.</p>` },
+  { keywords: ["umur berkahwin khadijah","bila nabi kahwin","usia nabi kahwin"],
+    answer: `<p>Nabi Muhammad ﷺ berkahwin dengan Khadijah binti Khuwailid ketika Baginda berusia <b>25 tahun</b>.</p>` },
+  { keywords: ["berapa lama berdakwah","tempoh dakwah","berapa tahun dakwah makkah madinah"],
+    answer: `<p>Nabi Muhammad ﷺ berdakwah selama <b>13 tahun di Makkah</b> dan <b>10 tahun di Madinah</b>, menjadikan tempoh keseluruhan risalah kenabian Baginda selama 23 tahun (610–632 Masihi).</p>` },
+  { keywords: ["nabi yatim","yatim piatu","nabi anak yatim"],
+    answer: `<p>Nabi Muhammad ﷺ menjadi <b>yatim</b> sejak sebelum dilahirkan (bapanya, Abdullah, wafat semasa Baginda masih dalam kandungan), dan menjadi <b>yatim piatu</b> sepenuhnya ketika ibunya, Aminah, wafat pada usia Baginda 6 tahun.</p>` }
 ];
 
 function normalize(str){ return str.toLowerCase().replace(/[?.,!]/g,"").replace(/\s+/g," ").trim(); }
+
+/* words that signal the question is at least within the Prophet/Maulid topic area,
+   even if we don't have a prepared answer for the specific detail asked */
+const TOPIC_KEYWORDS = ["nabi","rasul","muhammad","maulid","sirah","selawat","hijrah",
+  "sahabat","quran","khadijah","aisyah","fatimah","makkah","mekah","madinah","kaabah",
+  "wahyu","dakwah","abdullah","aminah","abu bakar","umar","uthman","ali bin","abu talib",
+  "abdul muttalib","halimah","gua hira","islam","masjid","israk","mikraj","khulafa",
+  "quraisy","bani hasyim","yatim","susuan"];
+
+function isOnTopic(query){
+  const q = normalize(query);
+  return TOPIC_KEYWORDS.some(k => q.includes(k));
+}
 
 function matchFixed(query){
   const q = normalize(query);
@@ -612,10 +639,14 @@ async function submitQuery(query){
     return;
   }
 
-  // No backend/API key available once hosted outside claude.ai, so we rely
-  // fully on the curated reference set. Give a warm, non-technical fallback
-  // instead of a scary "connection error" message.
-  const fallback = `<p>Maaf, soalan ini belum ada dalam rujukan kami buat masa ini.</p><p>Cuba tanya dengan cara lain, atau pilih salah satu soalan cadangan di bawah.</p>`;
+  // No backend/API key once hosted outside claude.ai, so we rely fully on the
+  // curated reference set. Give a clear, courteous message either way.
+  let fallback;
+  if(isOnTopic(query)){
+    fallback = `<p>Maaf, saya tidak dapat menjawab soalan tersebut buat masa ini.</p><p>Sila cuba soalan dalam bentuk lain, atau pilih salah satu soalan cadangan di bawah.</p>`;
+  } else {
+    fallback = `<p>Maaf, soalan ini tidak berkaitan dengan topik yang kami sediakan.</p><p>Sistem ini hanya menjawab soalan berkenaan Maulidur Rasul dan sirah Nabi Muhammad ﷺ. Sila ajukan soalan dalam skop tersebut.</p>`;
+  }
   showAnswer(query, fallback, "FIXED");
 }
 
@@ -670,12 +701,12 @@ if(SR){
   recognition = new SR();
   recognition.lang = "ms-MY";
   recognition.interimResults = true;
-  recognition.continuous = false;
+  recognition.continuous = true; // keep listening until the user taps the orb again
 
   recognition.onstart = () => {
     listening = true;
     orbBtn.classList.add("listening");
-    micStatus.textContent = "Mendengar… bercakap sekarang";
+    micStatus.textContent = "Mendengar… tekan sekali lagi untuk berhenti";
     stopSpeaking();
   };
   let liveTranscript = "";
