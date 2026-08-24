@@ -368,10 +368,8 @@ const FIXED_QA = [
 /* ---------------- 2. Biodata Nabi Muhammad ﷺ ---------------- */
 { q:["siapakah nabi muhammad","siapa nabi muhammad"],
   a:`<p>Nabi Muhammad ﷺ ialah <b>Nabi dan Rasul terakhir</b> yang diutuskan Allah kepada seluruh umat manusia, membawa risalah Islam melalui Al-Quran.</p>` },
-{ q:["di manakah nabi muhammad dilahirkan","tempat lahir nabi","nabi lahir kat mana","negara mana nabi lahir"],
-  a:`<p>Nabi Muhammad ﷺ dilahirkan di <b>Makkah al-Mukarramah</b>.</p>` },
-{ q:["bilakah nabi muhammad dilahirkan","nabi lahir tahun bila","bila nabi lahir","tarikh sebenar kelahiran nabi"],
-  a:`<p>Baginda dilahirkan pada <b>Tahun Gajah</b>, dianggarkan sekitar tahun <b>570/571 Masihi</b>. Tarikh 12 Rabiulawal amat masyhur dalam tradisi umat Islam, namun tarikh tepat kelahiran Baginda turut diperselisihkan oleh sebahagian ahli sejarah dan ulama sirah.</p>` },
+{ q:["di manakah nabi muhammad dilahirkan","tempat lahir nabi","nabi lahir kat mana","negara mana nabi lahir","bilakah nabi muhammad dilahirkan","nabi lahir tahun bila","bila nabi lahir","tarikh sebenar kelahiran nabi","bila dan di mana nabi lahir"],
+  a:`<p>Nabi Muhammad ﷺ dilahirkan di <b>Makkah al-Mukarramah</b>, pada <b>Tahun Gajah</b> (dianggarkan sekitar tahun <b>570/571 Masihi</b>). Tarikh 12 Rabiulawal amat masyhur dalam tradisi umat Islam, namun tarikh tepat kelahiran Baginda turut diperselisihkan oleh sebahagian ahli sejarah dan ulama sirah.</p>` },
 { q:["apakah nama penuh nabi muhammad","nama penuh nabi","nama lengkap muhammad"],
   a:`<p>Nama penuh Baginda ialah <b>Muhammad bin Abdullah bin Abdul Muttalib bin Hashim</b>.</p>` },
 { q:["siapakah ayah nabi muhammad","siapa ayah nabi","nama bapa nabi","siapa mak nabi","siapakah ibu nabi muhammad","siapa ibu nabi","nama ibu nabi"],
@@ -388,10 +386,8 @@ const FIXED_QA = [
   a:`<p>Sifat wajib bagi Rasul ialah <b>Siddiq</b> (benar), <b>Amanah</b> (dipercayai), <b>Tabligh</b> (menyampaikan) dan <b>Fatanah</b> (bijaksana).</p>` },
 { q:["berapakah umur nabi ketika menerima wahyu pertama","umur nabi jadi rasul","nabi umur berapa masa jadi rasul"],
   a:`<p>Nabi Muhammad ﷺ menerima wahyu pertama ketika berusia <b>40 tahun</b>.</p>` },
-{ q:["berapakah umur nabi muhammad ketika wafat","umur nabi wafat","nabi umur berapa masa meninggal"],
-  a:`<p>Nabi Muhammad ﷺ wafat ketika berusia <b>63 tahun</b>.</p>` },
-{ q:["di manakah nabi muhammad wafat","nabi wafat kat mana","tempat wafat nabi"],
-  a:`<p>Baginda wafat di <b>Madinah al-Munawwarah</b>.</p>` },
+{ q:["berapakah umur nabi muhammad ketika wafat","umur nabi wafat","nabi umur berapa masa meninggal","di manakah nabi muhammad wafat","nabi wafat kat mana","tempat wafat nabi","bilakah nabi wafat","bila nabi wafat","tahun berapa nabi wafat"],
+  a:`<p>Nabi Muhammad ﷺ wafat pada tahun <b>11 Hijrah</b> di <b>Madinah al-Munawwarah</b>, ketika berusia <b>63 tahun</b>.</p>` },
 { q:["di manakah nabi muhammad dikebumikan","kubur nabi","makam nabi","masjid nabawi","nabi dikebumikan kat mana"],
   a:`<p>Baginda dikebumikan di kamar Saidatina Aisyah RA, yang kini berada dalam kawasan <b>Masjid Nabawi</b>, Madinah.</p>` },
 { q:["apakah bahasa nabi muhammad","bahasa yang digunakan nabi"],
@@ -432,7 +428,7 @@ const FIXED_QA = [
   a:`<p><b>Ali bin Abi Talib RA</b> ialah menantu Nabi Muhammad ﷺ melalui perkahwinannya dengan Fatimah RA.</p>` },
 { q:["nabi ada berapa isteri","berapa bilangan isteri nabi","nabi ada 12 isteri ke"],
   a:`<p>Nabi Muhammad ﷺ mempunyai beberapa orang isteri sepanjang kehidupan Baginda. Riwayat sirah yang masyhur menyenaraikan <b>11 isteri</b> yang dinikahi Baginda, walaupun terdapat sedikit perbezaan cara pengiraan dalam sesetengah riwayat.</p>` },
-{ q:["siapakah bapa saudara nabi","hamzah bin abdul muttalib","abu lahab siapa"],
+{ q:["siapakah bapa saudara nabi","abu lahab siapa","siapakah abu lahab"],
   a:`<p>Antara bapa saudara Nabi Muhammad ﷺ ialah <b>Abu Talib</b> (yang membelanya), <b>Hamzah bin Abdul Muttalib</b> (pahlawan Islam yang syahid dalam Perang Uhud), dan <b>Abu Lahab</b> (yang menentang dakwah Baginda).</p>` },
 
 /* ---------------- 6. Wahyu Pertama ---------------- */
@@ -561,29 +557,54 @@ const FIXED_QA = [
 function normalize(str){ return str.toLowerCase().replace(/[?.,!'"]/g,"").replace(/\s+/g," ").trim(); }
 
 const STOPWORDS = new Set(["apa","apakah","siapa","siapakah","adakah","bagaimana","bagaimanakah",
-  "bila","bilakah","kenapa","mengapa","berapa","berapakah","di","ke","dari","daripada","dan","atau",
-  "yang","ialah","adalah","untuk","dengan","pada","dalam","itu","ini","ada","nak","tak","tu","ni",
-  "je","lah","pun","kat","punya","boleh","macam","pernah","saya","kita","kami","ya","tidak"]);
+  "bila","bilakah","kenapa","mengapa","berapa","berapakah","mana","manakah","di","ke","dari","daripada",
+  "dan","atau","yang","ialah","adalah","untuk","dengan","pada","dalam","itu","ini","ada","nak","tak",
+  "tu","ni","je","lah","pun","kat","punya","boleh","macam","pernah","saya","kita","kami","ya","tidak",
+  "kepada","tentang","pasal","tanya","tolong","cuba","eh","um","erm","ha","dia","nya"]);
+
+/* light synonym canonicalisation so common Malay word-variants (imbuhan,
+   informal speech) don't fragment the token overlap score */
+const SYNONYMS = {
+  "mak":"ibu", "emak":"ibu", "makcik":"ibu",
+  "bapa":"ayah", "ayahanda":"ayah",
+  "meninggal":"wafat", "mati":"wafat", "mangkat":"wafat", "kematian":"wafat",
+  "selepas":"lepas", "sesudah":"lepas",
+  "dilahirkan":"lahir", "kelahiran":"lahir",
+  "berkahwin":"kahwin", "perkahwinan":"kahwin"
+};
 
 function tokenize(str){
-  return normalize(str).split(" ").filter(w => w.length > 1 && !STOPWORDS.has(w));
+  return normalize(str).split(" ")
+    .filter(w => w.length > 1 && !STOPWORDS.has(w))
+    .map(w => SYNONYMS[w] || w);
 }
 
+/* F1-style scoring: recall = how much of the stored question's meaning is
+   covered by the spoken query; precision = how much of the spoken query is
+   accounted for by that stored question. Combining both stops short/generic
+   entries (e.g. "siapakah Nabi Muhammad?") from hijacking longer, more
+   specific questions (e.g. "di manakah Nabi Muhammad dilahirkan?") just
+   because they're trivially easy to fully match. */
 function matchFixed(query){
   const qTokens = tokenize(query);
   if(!qTokens.length) return null;
-  let best = null, bestScore = 0;
+  let best = null, bestScore = 0, bestHits = 0;
   for(const entry of FIXED_QA){
     for(const qText of entry.q){
       const eTokens = tokenize(qText);
       if(!eTokens.length) continue;
       let hits = 0;
       eTokens.forEach(t => { if(qTokens.includes(t)) hits++; });
-      const score = hits / eTokens.length;
-      if(score > bestScore){ bestScore = score; best = entry; }
+      if(hits === 0) continue;
+      const recall = hits / eTokens.length;
+      const precision = hits / qTokens.length;
+      const f1 = (2 * precision * recall) / (precision + recall);
+      if(f1 > bestScore || (f1 === bestScore && hits > bestHits)){
+        bestScore = f1; bestHits = hits; best = entry;
+      }
     }
   }
-  return bestScore >= 0.6 ? best : null;
+  return bestScore >= 0.55 ? best : null;
 }
 
 /* words that signal the question is at least within the Prophet/Maulid
@@ -601,8 +622,6 @@ function isOnTopic(query){
   const q = normalize(query);
   return TOPIC_KEYWORDS.some(k => q.includes(k));
 }
-
-function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function htmlToSpeechText(html){
   const tmp = document.createElement("div");
@@ -622,7 +641,8 @@ function hasMalayVoice(){ return malayVoices().length > 0; }
 
 function pickVoice(){
   if(!voices.length) return null;
-  const savedName = localStorage.getItem(VOICE_PREF_KEY);
+  let savedName = null;
+  try{ savedName = localStorage.getItem(VOICE_PREF_KEY); }catch(e){ /* storage blocked on this device — ignore */ }
   if(savedName){
     const saved = voices.find(v => v.name === savedName);
     if(saved) return saved;
@@ -652,7 +672,7 @@ function populateVoiceSelect(){
   if(current) sel.value = current.name;
   sel.classList.remove("hidden");
   sel.onchange = () => {
-    localStorage.setItem(VOICE_PREF_KEY, sel.value);
+    try{ localStorage.setItem(VOICE_PREF_KEY, sel.value); }catch(e){ /* storage blocked on this device — ignore */ }
     updateVoiceNotice();
   };
 }
@@ -764,7 +784,7 @@ function submitQuery(query){
 
   let fallback;
   if(isOnTopic(query)){
-    fallback = `<p>Maaf, Saya hanya boleh membantu menjawab soalan berkaitan Maulidur Rasul, biodata Nabi Muhammad ﷺ dan sejarah kehidupan Baginda.</p>`;
+    fallback = `<p>Maaf, saya tidak dapat menjawab soalan tersebut buat masa ini.</p><p>Sila cuba soalan dalam bentuk lain, atau pilih salah satu soalan cadangan di bawah.</p>`;
   } else {
     fallback = `<p>Maaf, soalan ini tidak berkaitan dengan topik yang kami sediakan.</p><p>Sistem ini hanya menjawab soalan berkenaan Maulidur Rasul dan sirah Nabi Muhammad ﷺ. Sila ajukan soalan dalam skop tersebut.</p>`;
   }
